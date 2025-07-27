@@ -1,11 +1,15 @@
-const API = import.meta.env.VITE_API_URL;
+const API_BASE = import.meta.env.VITE_API_URL;
 
-export const tradeColor = async (color, amount) => {
-  const res = await fetch(`${API}/trade`, {
+export const placeBet = async (color, amount) => {
+  const response = await fetch(`${API_BASE}/place-bet`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ color, amount })
   });
+  return response.json();
+};
 
-  return await res.json();
+export const getCurrentGame = async () => {
+  const response = await fetch(`${API_BASE}/current-game`);
+  return response.json();
 };

@@ -1,30 +1,30 @@
-import React, { useState } from 'react';
-import { tradeColor } from './api';
+import { useEffect, useState } from 'react';
+import { getCurrentGame } from './api';
 
-export default function App() {
-  const [color, setColor] = useState('red');
-  const [amount, setAmount] = useState('');
+function App() {
+  const [gameData, setGameData] = useState(null);
 
-  const handleTrade = async () => {
-    const res = await tradeColor(color, amount);
-    alert(res.message);
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getCurrentGame();
+      setGameData(data);
+    };
+
+    fetchData();
+    const interval = setInterval(fetchData, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
-    <div style={{ padding: '2rem' }}>
-      <h1>🎨 Color Trading App</h1>
-      <select value={color} onChange={e => setColor(e.target.value)}>
-        <option value="red">Red</option>
-        <option value="green">Green</option>
-        <option value="blue">Blue</option>
-      </select>
-      <input
-        type="number"
-        placeholder="Enter amount"
-        value={amount}
-        onChange={e => setAmount(e.target.value)}
-      />
-      <button onClick={handleTrade}>Trade</button>
+    <div>
+      <h1>Color Trading Game</h1>
+      {gameData ? (
+        <pre>{JSON.stringify(gameData, null, 2)}</pre>
+      ) : (
+        <p>Loading game data...</p>
+      )}
     </div>
   );
 }
+
+export default App;
